@@ -1,0 +1,15 @@
+{
+  "name": "tab-editor",
+  "version": "1.0.0",
+  "description": "Tab player and editor extending Ace Editor",
+  "main": "index.js",
+  "scripts": {
+    "test": "live-server --open='test/'",
+    "start": "live-server"
+  },
+  "author": "Ryan White",
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "^1.2.0"
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      tab-editor {/* height: 300px; */}
+      paper-toast {
+        --paper-toast-color: var(--paper-green-500);
+      }
+      paper-toast[error] {
+        --paper-toast-color: var(--paper-red-500);
+      }
+    </style>
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.0/webcomponents-loader.js"></script>
+  </head>
+  <body>
+    <script src="https://unpkg.com/@polymer/paper-toast@3.0.0-pre.21/paper-toast.js?module" type="module"></script>
+    <script src="index.js" type="module"></script>
+    <tab-editor id="editor" controls hidden>
+      +++
+      Title = "Itsumo Nando Demo / Always With Me"
+      Movie = "Spirited Away"
+      Composer = "Joe Hisaishi"
+      Arranger = "Basisti94 (Miro Laaksonen)"
+      Date = "12.9.2013"
+      Tempo = 135
+      Capo = 5
+      +++
+           Q    Q    Q       Q    Q    Q       Q    Q    Q       Q    Q    E  E
+      e||-------------0----|-------------0----|-------------0----|-------------------|
+      B||--------1---------|--------1---------|--------1---------|-------------1--3--|
+      G||--------0---------|--------0---------|--------0---------|--------0----------|
+      D||------------------|------------------|------------------|-------------------|
+      A||---3--------------|---3--------------|---3--------------|---3---------------|
+      E||------------------|------------------|------------------|-------------------|
+      
+         H.              H.
+      ----L------------|---0------------||
+      -----------------|---1------------||
+      -----------------|---0------------||
+      -----------------|---2------------||
+      -----------------|---3------------||
+      -----------------|----------------||
+    </tab-editor>
+    <paper-toast id="toast"></paper-toast>
+    <script>
+    let editor = document.getElementById('editor')
+    let toast = document.getElementById('toast')
+    console.dir(toast)
+    editor.addEventListener('message', ({ detail: {
+      message,
+      color,
+    }}) => {
+      console.log(message)
+      toast.text = message;
+      toast.open()
+    })
+    </script>
+  </body>
+</html>
