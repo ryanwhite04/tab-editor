@@ -1,18 +1,18 @@
 import './assets/toml.js'
 
 export function read(text, position) {
-  const mappings = {
-    '_': '|',
-    '^': '|L10|R',
-    '$': '|M10|S',
-    'e': '|E6 ',
-    'B': '|B5 ',
-    'G': '|G5 ',
-    'D': '|D5 ',
-    'A': '|A4 ',
-    'E': '|E4 ',
-    'F': '|F5 ',
-  }
+    const mappings = {
+      '_': '|',
+      '^': '|L10|R',
+      '$': '|M10|S',
+      'e': '|E6 ',
+      'B': '|B5 ',
+      'G': '|G5 ',
+      'D': '|D5 ',
+      'A': '|A4 ',
+      'E': '|E4 ',
+      'F': '|F5 ',
+    }
   text = text.slice(0, position);
   let note = parseInt(text.slice(-1), 36);
   let string = getNote(mappings[text.split('|')[0]]);
@@ -23,6 +23,12 @@ export function getNote(string = '') {
   var trimmed = string.trim();
   var octave = Number(trimmed.slice(-1));
   var note = trimmed.slice(1, -1);
+  console.log('getNote', {
+    string,
+    trimmed,
+    octave,
+    note,
+  })
   return ([
     'C', 'C#',
     'D', 'D#',
@@ -90,10 +96,11 @@ export function getPreviousRow(value, position) {
 export function getNextRow(value, position) {
   let { row, column } = position;
   let regex = /^(\|?[-\w]*)(\|[-\w]*\s{0,2})\s*#?/;
+  console.log('getNextRow', { value, position })
   return value.split('\n')
     .slice(row)
     .map((line, row) => ({ line, row }))
-    .filter(({ line }) => line.match(regex))[getSiblings(value, position).length].row + row
+    .filter(({ line }) => line.match(regex))[getSiblings(value, position).length].row + row + 1
 }
 
 export function getStartingRows(value) {

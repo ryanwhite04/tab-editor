@@ -1,9 +1,9 @@
 import { LitElement, html } from 'https://unpkg.com/@polymer/lit-element@latest/lit-element.js?module'
 import AceEditor from './node_modules/ace-editor/index.js'
-import Tone from './assets/tone.mjs'
+import Tone from './assets/tone.js'
 import 'https://unpkg.com/@material/mwc-fab@0.1.2/mwc-fab.js?module'
 import {
-  toml,
+  parse,
   getFirstSibling,
   getIndexes,
   getLastSibling,
@@ -50,6 +50,7 @@ function prev(instruments) {
   return function (editor, { count, ...args }) {
     const position = editor.getCursorPosition();
     const { row, column } = position;
+    const value = editor.getValue();
     const lines = value.split('\n')
     const line = lines[row]
     const note = read(line.slice(0, column))
@@ -134,7 +135,9 @@ function next(instruments, format = 'pro') {
     let instrument = it ? (8*it[1]+ +it[2]) : 24
     
     if (/^\|-{1,3}/.test(next)) {
-      editor.navigateRight(Math.min(...getSiblings(lines, position).map(sibling => sibling.slice(column).match(/\|(-*)/)[0].length)));
+      editor.navigateRight(Math.min(...getSiblings(value, position)
+        .map(row => getLine(value, { row }))
+        .map(sibling => sibling.slice(column).match(/\|(-*)/)[0].length)));
       this.exec(editor, { ...args, count: ++count });
     } else if (/\|L\d\d/.test(next)) {
       editor.navigateTo(parseInt(next.slice(2)), 0)
@@ -143,7 +146,7 @@ function next(instruments, format = 'pro') {
       editor.navigateDown(lines
         .slice(row)
         .map((line, row) => ({ line, row }))
-        .filter(({ line }) => line.match(/^(\|?[-\w]*)(\|[-\w]*\s{0,2})\s*#?/))[getSiblings(lines, position).length].row)
+        .filter(({ line }) => line.match(/^(\|?[-\w]*)(\|[-\w]*\s{0,2})\s*#?/))[getSiblings(value, position).length].row)
       editor.navigateLineStart()
       this.exec(editor, { ...args, count: ++count });
     } else if (/^\|\|\s*$/.test(next)) {
@@ -157,7 +160,12 @@ function next(instruments, format = 'pro') {
       this.exec(editor, { ...args, count: ++count });
     } else {
       const note = read(line.slice(0, 1+column))
-      const jump = Math.max(...getSiblings(lines, position).map(sibling => sibling.slice(column).split('-')[0].length))
+      const jump = Math.max(...getSiblings(value, position)
+        .map(row => {
+          console.log({ getLine, value, row })
+          return getLine(value, { row })
+        })
+        .map(sibling => sibling.slice(column).split('-')[0].length))
       jump && editor.navigateRight(jump)
       instruments.play(note, instrument)
       editor.navigateRight(args.times)
